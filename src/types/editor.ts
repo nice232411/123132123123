@@ -15,6 +15,7 @@ export interface Window {
   wallId: string;
   position: number;
   width: number;
+  color: string;
 }
 
 export interface Door {
@@ -23,6 +24,7 @@ export interface Door {
   position: number;
   width: number;
   openDirection: 'left' | 'right';
+  color: string;
 }
 
 export type Tool = 'select' | 'wall' | 'window' | 'door' | 'pan';
@@ -37,6 +39,14 @@ export interface EditorState {
   tempWallStart: Point | null;
   zoom: number;
   pan: Point;
+  history: HistoryState[];
+  historyIndex: number;
+}
+
+export interface HistoryState {
+  walls: Wall[];
+  windows: Window[];
+  doors: Door[];
 }
 
 export interface Project {

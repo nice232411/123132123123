@@ -134,7 +134,7 @@ export function Canvas({
     const start = toScreenCoords(startPoint.x, startPoint.y);
     const end = toScreenCoords(endPoint.x, endPoint.y);
 
-    ctx.strokeStyle = isSelected ? SELECTED_COLOR : WINDOW_COLOR;
+    ctx.strokeStyle = isSelected ? SELECTED_COLOR : window.color;
     ctx.lineWidth = (wall.thickness + 4) * state.zoom;
     ctx.lineCap = 'butt';
 
@@ -152,7 +152,7 @@ export function Canvas({
       (startPoint.y + endPoint.y) / 2
     );
 
-    ctx.strokeStyle = isSelected ? SELECTED_COLOR : WINDOW_COLOR;
+    ctx.strokeStyle = isSelected ? SELECTED_COLOR : window.color;
     ctx.lineWidth = 2;
 
     for (let side = -1; side <= 1; side += 2) {
@@ -209,7 +209,7 @@ export function Canvas({
     const hingeScreen = door.openDirection === 'right' ? start : end;
     const doorLength = distance(start, end);
 
-    ctx.strokeStyle = isSelected ? SELECTED_COLOR : DOOR_COLOR;
+    ctx.strokeStyle = isSelected ? SELECTED_COLOR : door.color;
     ctx.lineWidth = 3;
 
     ctx.beginPath();

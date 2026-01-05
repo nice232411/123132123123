@@ -5,38 +5,41 @@ interface PropertiesPanelProps {
   state: EditorState;
   onUpdateWindow: (id: string, updates: Partial<Window>) => void;
   onUpdateDoor: (id: string, updates: Partial<Door>) => void;
+  onUpdateWall: (id: string, updates: Partial<Wall>) => void;
 }
 
-export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: PropertiesPanelProps) {
+export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor, onUpdateWall }: PropertiesPanelProps) {
   if (!state.selectedId || !state.selectedType) {
     return (
       <div className="bg-white border-l border-gray-200 w-80 p-6">
         <div className="text-center text-gray-400 mt-10">
-          <p className="text-sm">No object selected</p>
-          <p className="text-xs mt-2">Select a wall, window, or door to edit properties</p>
+          <p className="text-sm">Объект не выбран</p>
+          <p className="text-xs mt-2">Выберите стену, окно или дверь для редактирования</p>
         </div>
 
         <div className="mt-10 space-y-4">
           <div className="bg-blue-50 rounded-lg p-4">
-            <h3 className="font-semibold text-sm text-blue-900 mb-2">Quick Guide</h3>
+            <h3 className="font-semibold text-sm text-blue-900 mb-2">Краткое руководство</h3>
             <ul className="text-xs text-blue-800 space-y-1">
-              <li>• Click points to draw walls</li>
-              <li>• Right-click to cancel wall</li>
-              <li>• Click on walls to add windows/doors</li>
-              <li>• Use select tool to edit objects</li>
-              <li>• Middle-click or Alt+drag to pan</li>
+              <li>• Кликайте для создания стен</li>
+              <li>• ПКМ для отмены стены</li>
+              <li>• Кликайте по стенам для добавления окон/дверей</li>
+              <li>• Используйте выбор для редактирования</li>
+              <li>• Средняя кнопка или Alt+перетаскивание для панорамы</li>
             </ul>
           </div>
 
           <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-sm text-gray-900 mb-2">Keyboard Shortcuts</h3>
+            <h3 className="font-semibold text-sm text-gray-900 mb-2">Горячие клавиши</h3>
             <ul className="text-xs text-gray-700 space-y-1">
-              <li>• <kbd className="px-1 bg-white border rounded">S</kbd> Select tool</li>
-              <li>• <kbd className="px-1 bg-white border rounded">W</kbd> Wall tool</li>
-              <li>• <kbd className="px-1 bg-white border rounded">N</kbd> Window tool</li>
-              <li>• <kbd className="px-1 bg-white border rounded">D</kbd> Door tool</li>
-              <li>• <kbd className="px-1 bg-white border rounded">Del</kbd> Delete selected</li>
-              <li>• <kbd className="px-1 bg-white border rounded">Esc</kbd> Deselect</li>
+              <li>• <kbd className="px-1 bg-white border rounded">S</kbd> Инструмент выбора</li>
+              <li>• <kbd className="px-1 bg-white border rounded">W</kbd> Инструмент стены</li>
+              <li>• <kbd className="px-1 bg-white border rounded">N</kbd> Инструмент окна</li>
+              <li>• <kbd className="px-1 bg-white border rounded">D</kbd> Инструмент двери</li>
+              <li>• <kbd className="px-1 bg-white border rounded">Del</kbd> Удалить выбранное</li>
+              <li>• <kbd className="px-1 bg-white border rounded">Esc</kbd> Снять выделение</li>
+              <li>• <kbd className="px-1 bg-white border rounded">Ctrl+Z</kbd> Отменить</li>
+              <li>• <kbd className="px-1 bg-white border rounded">Ctrl+Y</kbd> Повторить</li>
             </ul>
           </div>
         </div>
@@ -52,11 +55,11 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
 
     return (
       <div className="bg-white border-l border-gray-200 w-80 p-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">Wall Properties</h2>
+        <h2 className="text-lg font-semibold mb-4 text-gray-800">Свойства стены</h2>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Length</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Длина</label>
             <div className="bg-gray-50 rounded-lg p-3">
               <span className="text-2xl font-semibold text-gray-900">{Math.round(length)}</span>
               <span className="text-sm text-gray-500 ml-2">px</span>
@@ -64,24 +67,33 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Thickness</label>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <span className="text-2xl font-semibold text-gray-900">{wall.thickness}</span>
-              <span className="text-sm text-gray-500 ml-2">px</span>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Толщина (px)</label>
+            <input
+              type="range"
+              min="5"
+              max="30"
+              value={wall.thickness}
+              onChange={(e) => onUpdateWall(wall.id, { thickness: Number(e.target.value) })}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <span>5px</span>
+              <span className="font-semibold text-gray-900">{wall.thickness}px</span>
+              <span>30px</span>
             </div>
           </div>
 
           <div className="pt-4 border-t border-gray-200">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Coordinates</h3>
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Координаты</h3>
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-gray-50 rounded p-2">
-                <div className="text-xs text-gray-500">Start</div>
+                <div className="text-xs text-gray-500">Начало</div>
                 <div className="text-sm font-mono">
                   {Math.round(wall.start.x)}, {Math.round(wall.start.y)}
                 </div>
               </div>
               <div className="bg-gray-50 rounded p-2">
-                <div className="text-xs text-gray-500">End</div>
+                <div className="text-xs text-gray-500">Конец</div>
                 <div className="text-sm font-mono">
                   {Math.round(wall.end.x)}, {Math.round(wall.end.y)}
                 </div>
@@ -91,7 +103,7 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
 
           <div className="bg-amber-50 rounded-lg p-3 mt-4">
             <p className="text-xs text-amber-800">
-              Deleting this wall will also remove any windows or doors attached to it.
+              При удалении стены также удалятся все окна и двери на ней.
             </p>
           </div>
         </div>
@@ -110,11 +122,11 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
 
     return (
       <div className="bg-white border-l border-gray-200 w-80 p-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">Window Properties</h2>
+        <h2 className="text-lg font-semibold mb-4 text-gray-800">Свойства окна</h2>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Width (px)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Ширина (px)</label>
             <input
               type="range"
               min="50"
@@ -131,7 +143,7 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Position on Wall</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Позиция на стене</label>
             <input
               type="range"
               min="0"
@@ -142,23 +154,36 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
               className="w-full"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Start</span>
+              <span>Начало</span>
               <span className="font-semibold text-gray-900">{Math.round(window.position * 100)}%</span>
-              <span>End</span>
+              <span>Конец</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Цвет</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="color"
+                value={window.color}
+                onChange={(e) => onUpdateWindow(window.id, { color: e.target.value })}
+                className="h-10 w-20 rounded cursor-pointer"
+              />
+              <span className="text-sm text-gray-600 font-mono">{window.color}</span>
             </div>
           </div>
 
           <div className="pt-4 border-t border-gray-200">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Wall Info</h3>
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Информация о стене</h3>
             <div className="bg-gray-50 rounded-lg p-3">
-              <div className="text-xs text-gray-500">Wall Length</div>
+              <div className="text-xs text-gray-500">Длина стены</div>
               <div className="text-lg font-semibold text-gray-900">{Math.round(wallLength)}px</div>
             </div>
           </div>
 
           <div className="bg-sky-50 rounded-lg p-3 mt-4">
             <p className="text-xs text-sky-800">
-              Windows are automatically centered on the wall. Adjust the width and position as needed.
+              Окна автоматически центрируются на стене. Настройте ширину и позицию по необходимости.
             </p>
           </div>
         </div>
@@ -177,11 +202,11 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
 
     return (
       <div className="bg-white border-l border-gray-200 w-80 p-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">Door Properties</h2>
+        <h2 className="text-lg font-semibold mb-4 text-gray-800">Свойства двери</h2>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Width (px)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Ширина (px)</label>
             <input
               type="range"
               min="60"
@@ -198,7 +223,7 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Position on Wall</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Позиция на стене</label>
             <input
               type="range"
               min="0"
@@ -209,14 +234,14 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
               className="w-full"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Start</span>
+              <span>Начало</span>
               <span className="font-semibold text-gray-900">{Math.round(door.position * 100)}%</span>
-              <span>End</span>
+              <span>Конец</span>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Open Direction</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Направление открытия</label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => onUpdateDoor(door.id, { openDirection: 'left' })}
@@ -226,7 +251,7 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                Left
+                Влево
               </button>
               <button
                 onClick={() => onUpdateDoor(door.id, { openDirection: 'right' })}
@@ -236,22 +261,35 @@ export function PropertiesPanel({ state, onUpdateWindow, onUpdateDoor }: Propert
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                Right
+                Вправо
               </button>
             </div>
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Цвет</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="color"
+                value={door.color}
+                onChange={(e) => onUpdateDoor(door.id, { color: e.target.value })}
+                className="h-10 w-20 rounded cursor-pointer"
+              />
+              <span className="text-sm text-gray-600 font-mono">{door.color}</span>
+            </div>
+          </div>
+
           <div className="pt-4 border-t border-gray-200">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Wall Info</h3>
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Информация о стене</h3>
             <div className="bg-gray-50 rounded-lg p-3">
-              <div className="text-xs text-gray-500">Wall Length</div>
+              <div className="text-xs text-gray-500">Длина стены</div>
               <div className="text-lg font-semibold text-gray-900">{Math.round(wallLength)}px</div>
             </div>
           </div>
 
           <div className="bg-amber-50 rounded-lg p-3 mt-4">
             <p className="text-xs text-amber-800">
-              Doors automatically show opening arc. Choose the direction that makes sense for your layout.
+              Двери автоматически показывают дугу открытия. Выберите направление подходящее для вашего плана.
             </p>
           </div>
         </div>
